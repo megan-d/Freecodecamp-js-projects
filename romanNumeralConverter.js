@@ -1,168 +1,213 @@
-function convertToRoman(num) {
-  // take input number and break it up into thousands, hundreds, tens, and ones. NEED TO FIGURE OUT HOW TO DO THIS FOR 100s and 10s. to get ones place, may need to just select last digit in string
-  const thousands = Math.trunc(num / 1000);
-  const hundreds = Math.trunc((num % 1000) / 100);
-  const tens = num / 10;
-  const ones = num
-    .toString()
-    .split('')
-    .pop();
-
-  console.log(thousands);
-  console.log(hundreds);
-
-  let thousandsString = '';
-  if (thousands >= 1) {
-    // go through thousands as many times as its value (e.g., if 4, 4 times) and add the symbol to the string
-    for (let i = 1; i <= thousands; i++) {
-      thousandsString += 'M';
-    }
-  }
-
-  // going to be different for hundreds after 400
-  let hundredsString = '';
-  if (hundreds >= 1 && hundreds <= 3) {
-    // go through thousands as many times as its value (e.g., if 4, 4 times) and add the symbol to the string. AS ITS WRITTEN NOW WILL ONLY WORK FOR 100, 200, and 300
-    for (let i = 1; i <= hundreds; i++) {
-      hundredsString += 'C';
-    }
-  } else if (hundreds === 4) {
-    hundredsString += 'CD';
-  }
-
-  // once have symbol for each level, combine them all into one string
-  console.log({ thousandsString });
-  console.log({ hundredsString });
-  //   return num;
-}
-
-convertToRoman(2336);
-convertToRoman(2436);
-
-// chart of values. probably better to make a function that loops through the romans array and says if the key equals the value of num, use that roman value.
+// chart of values
 const romans = [
   {
-    num: 1,
+    number: 1,
     roman: 'I',
   },
   {
-    num: 2,
+    number: 2,
     roman: 'II',
   },
   {
-    num: 3,
+    number: 3,
     roman: 'III',
   },
   {
-    num: 4,
+    number: 4,
     roman: 'IV',
   },
   {
-    num: 5,
+    number: 5,
     roman: 'V',
   },
   {
-    num: 6,
+    number: 6,
     roman: 'VI',
   },
   {
-    num: 7,
+    number: 7,
     roman: 'VII',
   },
   {
-    num: 8,
+    number: 8,
     roman: 'VIII',
   },
   {
-    num: 9,
+    number: 9,
     roman: 'IX',
   },
   {
-    num: 10,
+    number: 10,
     roman: 'X',
   },
   {
-    num: 20,
+    number: 20,
     roman: 'XX',
   },
   {
-    num: 30,
+    number: 30,
     roman: 'XXX',
   },
   {
-    num: 40,
+    number: 40,
     roman: 'XL',
   },
   {
-    num: 50,
+    number: 50,
     roman: 'L',
   },
   {
-    num: 60,
+    number: 60,
     roman: 'LX',
   },
   {
-    num: 70,
+    number: 70,
     roman: 'LXX',
   },
   {
-    num: 80,
+    number: 80,
     roman: 'LXXX',
   },
   {
-    num: 90,
+    number: 90,
     roman: 'XC',
   },
   {
-    num: 100,
+    number: 100,
     roman: 'C',
   },
   {
-    num: 200,
+    number: 200,
     roman: 'CC',
   },
   {
-    num: 300,
+    number: 300,
     roman: 'CCC',
   },
   {
-    num: 400,
+    number: 400,
     roman: 'CD',
   },
   {
-    num: 500,
+    number: 500,
     roman: 'D',
   },
   {
-    num: 600,
+    number: 600,
     roman: 'DC',
   },
   {
-    num: 700,
+    number: 700,
     roman: 'DCC',
   },
   {
-    num: 800,
+    number: 800,
     roman: 'DCCC',
   },
   {
-    num: 900,
+    number: 900,
     roman: 'CM',
   },
   {
-    num: 1000,
+    number: 1000,
     roman: 'M',
   },
   {
-    num: 2000,
+    number: 2000,
     roman: 'MM',
   },
   {
-    num: 3000,
+    number: 3000,
     roman: 'MMM',
   },
   {
-    num: 4000,
+    number: 4000,
     roman: 'MMMM',
   },
 ];
+
+function convertToRoman(num) {
+  // take input number and break it up into thousands, hundreds, tens, and ones.
+  const thousands = Math.trunc(num / 1000) * 1000;
+  // if (num >= 1000) {
+  //   thousands = Math.trunc(num / 1000) * 1000;
+  // } else {
+  //   thousands = 0;
+  // }
+  const hundreds = Math.trunc((num % 1000) / 100) * 100;
+  const tens = Math.trunc(((num % 1000) % 100) / 10) * 10;
+  const ones = parseInt(
+    num
+      .toString()
+      .split('')
+      .pop()
+  );
+
+  // Filter romans object for each (thousands, hundreds, etc). If key matches the above value, then set that string equal to the value of that key.
+  // May want to create a separate helper function for the filter
+
+  // THOUSANDS. Need to have edge case for if there is nothing in thousands place.
+  const thousandsMatch = romans.filter(el => thousands === el.number);
+  let thousandsString;
+  if (thousandsMatch[0]) {
+    thousandsString = thousandsMatch[0].roman;
+  } else {
+    thousandsString = '';
+  }
+
+  // HUNDREDS. Need to have edge case for if there is nothing in hundreds place.
+  const hundredsMatch = romans.filter(el => hundreds === el.number);
+  let hundredsString;
+  if (hundredsMatch[0]) {
+    hundredsString = hundredsMatch[0].roman;
+  } else {
+    hundredsString = '';
+  }
+
+  // TENS. Need to have edge case for if there is nothing in tens place.
+  const tensMatch = romans.filter(el => tens === el.number);
+  let tensString;
+  if (tensMatch[0]) {
+    tensString = tensMatch[0].roman;
+  } else {
+    tensString = '';
+  }
+
+  // ONES. Need to have edge case for if there is nothing in ones place.
+  const onesMatch = romans.filter(el => ones === el.number);
+  let onesString;
+  if (onesMatch[0]) {
+    onesString = onesMatch[0].roman;
+  } else {
+    onesString = '';
+  }
+
+  // // once have symbol for each level, combine them all into one final string and return that string
+  const finalStr = thousandsString + hundredsString + tensString + onesString;
+  return finalStr;
+}
+
+// convertToRoman(2014);
+// convertToRoman(114);
+// convertToRoman(3134);
+convertToRoman(12);
+
+// THE BELOW IS THE LONG WAY. CONSIDER TRYING TO MATCH OBJECT KEYS AND VALUES INSTEAD.
+// let thousandsString = '';
+// if (thousands >= 1) {
+//   // go through thousands as many times as its value (e.g., if 4, 4 times) and add the symbol to the string
+//   for (let i = 1; i <= thousands; i++) {
+//     thousandsString += 'M';
+//   }
+// }
+
+// // going to be different for hundreds after 400
+// let hundredsString = '';
+// if (hundreds >= 1 && hundreds <= 3) {
+//   // go through thousands as many times as its value (e.g., if 4, 4 times) and add the symbol to the string. AS ITS WRITTEN NOW WILL ONLY WORK FOR 100, 200, and 300
+//   for (let i = 1; i <= hundreds; i++) {
+//     hundredsString += 'C';
+//   }
+// } else if (hundreds === 4) {
+//   hundredsString += 'CD';
+// }
