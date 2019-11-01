@@ -190,7 +190,7 @@ function convertToRoman(num) {
 // convertToRoman(2014);
 // convertToRoman(114);
 // convertToRoman(3134);
-convertToRoman(12);
+convertToRoman(2143);
 
 // THE BELOW IS THE LONG WAY. CONSIDER TRYING TO MATCH OBJECT KEYS AND VALUES INSTEAD.
 // let thousandsString = '';
