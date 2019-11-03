@@ -1,6 +1,6 @@
 function telephoneCheck(str) {
   // Good luck!
-  const re = /^1?\s?[0-9]{3}-?\s?[0-9]{3}-?\s?[0-9]{4}$/g;
+  const re = /^1?\s?(\(([0-9]{3})\)|([0-9]{3}))-?\s?([0-9]{3})-?\s?([0-9]{4})$/gm;
   if (re.test(str)) {
     return true;
   }
