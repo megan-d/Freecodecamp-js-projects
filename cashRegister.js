@@ -10,7 +10,7 @@ const cashInDrawerTotal = function(cid) {
 };
 
 function checkCashRegister(price, cash, cid) {
-  let changeDue = cash - price;
+  const changeDue = cash - price;
   // Here is your change, ma'am.
   // Set up object to return status and change
   const statusObject = {
@@ -18,10 +18,34 @@ function checkCashRegister(price, cash, cid) {
     change: [],
   };
 
+  // Create object for values of each dollar/coin
+  const values = [
+    ['ONE HUNDRED', 100],
+    ['TWENTY', 20],
+    ['TEN', 10],
+    ['FIVE', 5],
+    ['ONE', 1],
+    ['QUARTER', 0.25],
+    ['DIME', 0.1],
+    ['NICKEL', 0.05],
+    ['PENNY', 0.01],
+  ];
+
   // Call cashInDrawlTotal function using cid to determine total amount availble in drawer
   const totalCid = cashInDrawerTotal(cid);
+  console.log({ totalCid });
+  console.log({ changeDue });
   // Define separate variable for cid array and reverse to have highest values first
   const drawer = [...cid].reverse();
+  // add value for each denomination as third element in each array
+  drawer.forEach(function(el) {
+    for (let i = 0; i < values.length; i++) {
+      if (el[0] === values[i][0]) {
+        el.push(values[i][1]);
+      }
+    }
+    return drawer;
+  });
 
   // Update statusObject based on various scenarios that could occur
   if (totalCid < changeDue) {
@@ -32,14 +56,26 @@ function checkCashRegister(price, cash, cid) {
     // If totalCid is equal to changeDue, update statusObject to state closed and change is cid
   } else if (totalCid === changeDue) {
     statusObject.status = 'CLOSED';
+    cid.forEach(el => el.splice(-1, 1));
     statusObject.change = cid;
   } else {
     // If change can be provided, update status object with change due in coins and bills, sorted in highest to lowest order
+    // define total variable to keep track of total for each denomination
+    let changeOwed = changeDue;
+    let total;
     for (let i = 0; i < drawer.length; i++) {
-      // Loop through drawer array. While one hundred is less than changeDue, push that amount into change array of statusObject. Subtract 100 from changeDue and continue. Continue for each element of array.
-      while (drawer[i][1] <= changeDue) {
-        statusObject.change.push(drawer[i]);
-        changeDue -= drawer[i][1];
+      total = 0;
+      // While the amount of each denomination (e.g., $20) can go into changeDue, continue to take out that denomination from biggest to smallest
+      while (drawer[i][2] <= changeOwed && drawer[i][1] !== 0) {
+        // While the value of each denomination (drawer[i][2]) can go into the total available for that denomination (drawer[i][1]), continue to do so. Deduct denomination each time from total for that denomination (drawer[i[1] - values[j][1]). Keep track of total for that denomination and up it by denomination each time pass through (e.g, 20, 40, 60).
+        while (drawer[i][2] <= drawer[i][1] && drawer[i][2] <= changeOwed) {
+          total += drawer[i][2];
+          drawer[i][1] -= drawer[i][2];
+          changeOwed -= drawer[i][2];
+        }
+        console.log({ changeOwed });
+        statusObject.change.push([drawer[i][0], total]);
+        console.log({ statusObject });
       }
     }
     statusObject.status = 'OPEN';
