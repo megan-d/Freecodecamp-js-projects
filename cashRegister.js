@@ -71,7 +71,7 @@ function checkCashRegister(price, cash, cid) {
         while (drawer[i][2] <= drawer[i][1] && drawer[i][2] <= changeOwed) {
           total += drawer[i][2];
           drawer[i][1] -= drawer[i][2];
-          changeOwed -= drawer[i][2];
+          changeOwed = Math.round(changeOwed * 100) / 100 - drawer[i][2];
         }
         console.log({ changeOwed });
         statusObject.change.push([drawer[i][0], total]);
