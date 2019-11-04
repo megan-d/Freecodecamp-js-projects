@@ -10,35 +10,45 @@ const cashInDrawerTotal = function(cid) {
 };
 
 function checkCashRegister(price, cash, cid) {
-  const changeDue = cash - price;
+  let changeDue = cash - price;
   // Here is your change, ma'am.
-
-  // Set up basic object to return status and change
+  // Set up object to return status and change
   const statusObject = {
     status: '',
     change: [],
   };
 
-  // call cashInDrawlTotal function using cid to determine total amount availble in drawer based on argument provided
+  // Call cashInDrawlTotal function using cid to determine total amount availble in drawer
   const totalCid = cashInDrawerTotal(cid);
+  // Define separate variable for cid array and reverse to have highest values first
+  const drawer = [...cid].reverse();
 
-  // if totalCid is less than changeDue, update statusObject to state insufficient funds
+  // Update statusObject based on various scenarios that could occur
   if (totalCid < changeDue) {
+    // If totalCid is less than changeDue, update statusObject to state insufficient funds
+    // NEED TO UPDATE THIS ONE TO ADDRESS IF YOU CANNOT RETURN EXACT CHANGE. MIGHT NEED TO ADD THAT AS ADDITIONAL ELSE IF OR FOLLOW UP TO LAST ONE.
     statusObject.status = 'INSUFFICIENT_FUNDS';
     statusObject.change = [];
+    // If totalCid is equal to changeDue, update statusObject to state closed and change is cid
   } else if (totalCid === changeDue) {
     statusObject.status = 'CLOSED';
     statusObject.change = cid;
-  } else if{
-    // insert test to check if don't have exact change
   } else {
-      //insert rest to show cash register open and change
+    // If change can be provided, update status object with change due in coins and bills, sorted in highest to lowest order
+    for (let i = 0; i < drawer.length; i++) {
+      // Loop through drawer array. While one hundred is less than changeDue, push that amount into change array of statusObject. Subtract 100 from changeDue and continue. Continue for each element of array.
+      while (drawer[i][1] <= changeDue) {
+        statusObject.change.push(drawer[i]);
+        changeDue -= drawer[i][1];
+      }
+    }
+    statusObject.status = 'OPEN';
   }
 
   return statusObject;
 }
 
-checkCashRegister(19.5, 20, [
+checkCashRegister(3.26, 100, [
   ['PENNY', 1.01],
   ['NICKEL', 2.05],
   ['DIME', 3.1],
@@ -48,18 +58,6 @@ checkCashRegister(19.5, 20, [
   ['TEN', 20],
   ['TWENTY', 60],
   ['ONE HUNDRED', 100],
-]);
-
-checkCashRegister(19.5, 20, [
-  ['PENNY', 0.5],
-  ['NICKEL', 0],
-  ['DIME', 0],
-  ['QUARTER', 0],
-  ['ONE', 0],
-  ['FIVE', 0],
-  ['TEN', 0],
-  ['TWENTY', 0],
-  ['ONE HUNDRED', 0],
 ]);
 
 // Example cash-in-drawer array:
