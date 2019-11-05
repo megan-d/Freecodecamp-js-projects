@@ -33,8 +33,6 @@ function checkCashRegister(price, cash, cid) {
 
   // Call cashInDrawlTotal function using cid to determine total amount availble in drawer
   const totalCid = cashInDrawerTotal(cid);
-  console.log({ totalCid });
-  console.log({ changeDue });
   // Define separate variable for cid array and reverse to have highest values first
   const drawer = [...cid].reverse();
   // add value for each denomination as third element in each array
@@ -63,6 +61,7 @@ function checkCashRegister(price, cash, cid) {
     // define total variable to keep track of total for each denomination
     let changeOwed = changeDue;
     let total;
+    let finalTotal = 0;
     for (let i = 0; i < drawer.length; i++) {
       total = 0;
       // While the amount of each denomination (e.g., $20) can go into changeDue, continue to take out that denomination from biggest to smallest
@@ -73,12 +72,18 @@ function checkCashRegister(price, cash, cid) {
           drawer[i][1] -= drawer[i][2];
           changeOwed = Math.round(changeOwed * 100) / 100 - drawer[i][2];
         }
-        console.log({ changeOwed });
         statusObject.change.push([drawer[i][0], total]);
-        console.log({ statusObject });
+        finalTotal += total;
       }
     }
-    statusObject.status = 'OPEN';
+    // Round final total of change
+    const roundedTotal = Math.round(finalTotal * 100) / 100;
+    if (roundedTotal !== changeDue) {
+      statusObject.status = 'INSUFFICIENT_FUNDS';
+      statusObject.change = [];
+    } else {
+      statusObject.status = 'OPEN';
+    }
   }
 
   return statusObject;
